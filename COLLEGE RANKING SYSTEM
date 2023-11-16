@@ -1,0 +1,135 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+
+class Academics {
+public:
+    float efficiency;
+    float knowledge;
+
+    Academics(float eff, float knw) : efficiency(eff), knowledge(knw) {}
+};
+
+class Hostel {
+public:
+    float roomCondition;
+    float cleanliness;
+    float facilities;
+
+    Hostel(float room, float clean, float fac) : roomCondition(room), cleanliness(clean), facilities(fac) {}
+};
+
+class Mess {
+public:
+    float nutrition;
+    float hygiene;
+    float taste;
+
+    Mess(float nut, float hyg, float taste) : nutrition(nut), hygiene(hyg), taste(taste) {}
+};
+
+class College {
+public:
+    std::string name;
+    Academics academics;
+    float sports;
+    Mess mess;
+    Hostel hostel;
+    float library;
+    int fees;
+    float overallScore;
+
+    College(const std::string& n, float eff, float knw, float room, float clean, float fac)
+        : name(n), academics(eff, knw), sports(0), mess(0, 0, 0), hostel(room, clean, fac), library(0), fees(0), overallScore(0) {}
+
+    void calculateOverallScore() {
+        overallScore = (academics.efficiency + academics.knowledge + sports +
+                        mess.nutrition + mess.hygiene + mess.taste + 
+                        hostel.roomCondition + hostel.cleanliness + hostel.facilities + library) / static_cast<float>(fees);
+    }
+
+    bool operator<(const College& other) const {
+        return overallScore > other.overallScore; // Colleges are sorted in descending order of overall score
+    }
+};
+
+// Uncomment and complete these functions based on your needs
+// void saveDataToFile(const std::vector<College>& colleges, const std::string& filename) {
+//     // Implementation
+// }
+
+// std::vector<College> loadDataFromFile(const std::string& filename) {
+//     // Implementation
+// }
+
+int main() {
+    int numColleges;
+    std::cout << "Enter the number of colleges: ";
+    std::cin >> numColleges;
+
+    std::cin.ignore(); // Clear the newline character from the input buffer
+
+    std::vector<College> colleges;
+    colleges.reserve(numColleges);
+
+    for (int i = 0; i < numColleges; i++) {
+        std::string name;
+        float efficiency, knowledge, roomCondition, cleanliness, facilities;
+        std::cout << "Enter the name of college " << i + 1 << ": ";
+        std::getline(std::cin, name);
+
+        std::cout << "Enter the efficiency score (0-5) for college " << name << ": ";
+        std::cin >> efficiency;
+
+        std::cout << "Enter the knowledge score (0-5) for college " << name << ": ";
+        std::cin >> knowledge;
+
+        std::cout << "Enter the room condition score (0-5) for college " << name << ": ";
+        std::cin >> roomCondition;
+
+        std::cout << "Enter the cleanliness score (0-5) for college " << name << ": ";
+        std::cin >> cleanliness;
+
+        std::cout << "Enter the facilities score (0-5) for college " << name << ": ";
+        std::cin >> facilities;
+
+        College college(name, efficiency, knowledge, roomCondition, cleanliness, facilities);
+
+        std::cout << "Enter the sports score (0-5) for college " << name << ": ";
+        std::cin >> college.sports;
+
+        std::cout << "Enter the nutrition score (0-5) for college " << name << ": ";
+        std::cin >> college.mess.nutrition;
+
+        std::cout << "Enter the hygiene score (0-5) for college " << name << ": ";
+        std::cin >> college.mess.hygiene;
+
+        std::cout << "Enter the taste score (0-5) for college " << name << ": ";
+        std::cin >> college.mess.taste;
+
+        std::cout << "Enter the library rating (0-5) for college " << name << ": ";
+        std::cin >> college.library;
+
+        std::cout << "Enter the annual fees for college " << name << ": ";
+        std::cin >> college.fees;
+        std::cin.ignore(); // ignore one character
+
+
+        college.calculateOverallScore();
+
+        colleges.push_back(college);
+    }
+
+    std::sort(colleges.begin(), colleges.end());
+
+    std::cout << "Colleges ranked based on overall score:" << std::endl;
+    for (int i = 0; i < numColleges; i++) {
+        std::cout << "Rank " << i + 1 << ": " << colleges[i].name << " (Overall Score: " << colleges[i].overallScore << ")" << std::endl;
+    }
+
+    // Uncomment the following line to save data to a file
+    // saveDataToFile(colleges, "college_data.txt");
+
+    return 0;
+}
